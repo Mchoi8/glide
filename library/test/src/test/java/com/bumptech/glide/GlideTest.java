@@ -621,19 +621,6 @@ public class GlideTest {
     verify(target).onResourceReady(eq(bitmap), any(Transition.class));
   }
 
-  //My test
-  @Test
-  public void testLoadBitmap_asBitmapTest() {
-    Bitmap bitmap = Bitmap.createBitmap(1 , 1, Bitmap.Config.ARGB_8888);
-    requestManager.asBitmap().load(bitmap).into(target);
-
-    verify(target).onResourceReady(eq(bitmap), any(Transition.class));
-  }
-
-
-
-
-
   @Test
   public void testLoadBitmap_asDrawable() {
     Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
@@ -655,21 +642,6 @@ public class GlideTest {
     assertThat(((ColorDrawable) drawableCaptor.getValue()).getColor()).isEqualTo(Color.RED);
   }
 
-
-  //My test
-  @Test
-  public void testLoadDrawableTest() {
-    Drawable drawable = new ColorDrawable(Color.MAGENTA);
-    requestManager.load(drawable).into(target);
-
-    ArgumentCaptor<Drawable> drawableCaptor = ArgumentCaptor.forClass(Drawable.class);
-    verify(target).onResourceReady(drawableCaptor.capture(), any(Transition.class));
-    assertThat(((ColorDrawable) drawableCaptor.getValue()).getColor()).isEqualTo(Color.MAGENTA);
-  }
-
-
-
-
   @Test
   public void testNullModelPrefersFallbackDrawable() {
     Drawable placeholder = new ColorDrawable(Color.GREEN);
@@ -684,27 +656,6 @@ public class GlideTest {
     verify(target).onLoadFailed(eq(fallback));
   }
 
-  //My test
-  @Test
-  public void testNullModelPrefersFallbackDrawableTest() {
-    Drawable placeholder = new ColorDrawable(Color.GREEN);
-    Drawable error = new ColorDrawable(Color.RED);
-    Drawable fallback = new ColorDrawable(Color.BLUE);
-
-    Drawable drawable = new ColorDrawable(Color.LTGRAY);
-
-    requestManager
-        .load(drawable)
-        .apply(placeholderOf(placeholder).error(error).fallback(fallback))
-        .into(target);
-
-    //verify(target).onLoadStarted(fallback);
-    //verify(target).onLoadFailed(eq(fallback));
-  }
-
-
-
-
   @Test
   public void testNullModelResolvesToUsePlaceholder() {
     Drawable placeholder = new ColorDrawable(Color.GREEN);
@@ -714,32 +665,9 @@ public class GlideTest {
     verify(target).onLoadFailed(eq(placeholder));
   }
 
-
-
-  //My test
-  @Test
-  public void testNullModelResolvesToUsePlaceholderTest() {
-    Drawable placeholder = new ColorDrawable(Color.GREEN);
-    Drawable drawable = new ColorDrawable(Color.GRAY);
-
-    requestManager.load(drawable).apply(placeholderOf(placeholder)).into(target);
-
-    //verify(target).onLoadStarted(placeholder);
-    //verify(target).onLoadFailed(eq(placeholder));
-  }
-
-
-
   @Test
   public void testByteData() {
     byte[] data = new byte[] {1, 2, 3, 4, 5, 6};
-    requestManager.load(data).into(target);
-  }
-
-  //My test
-  @Test
-  public void testingBigByteData() {
-    byte[] data = new byte[] {6};
     requestManager.load(data).into(target);
   }
 
