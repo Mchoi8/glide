@@ -183,10 +183,36 @@ public class Glide implements ComponentCallbacks2 {
   // Double checked locking is safe here.
   @SuppressWarnings("GuardedBy")
   public static Glide get(@NonNull Context context) {
+    System.out.println("please");
+
     if (glide == null) {
       GeneratedAppGlideModule annotationGeneratedModule =
           getAnnotationGeneratedGlideModules(context.getApplicationContext());
       synchronized (Glide.class) {
+        System.out.println("Hey boss test method going on please");
+
+        if (glide == null) {
+          System.out.println("Hey boss test method going on ");
+
+          checkAndInitializeGlide(context, annotationGeneratedModule);
+        }
+      }
+    }
+
+    return glide;
+  }
+
+
+  @NonNull
+  // Double checked locking is safe here.
+  @SuppressWarnings("GuardedBy")
+  public static Glide getit(@NonNull Context context) {
+
+    if (glide == null) {
+      GeneratedAppGlideModule annotationGeneratedModule =
+          getAnnotationGeneratedGlideModules(context.getApplicationContext());
+      synchronized (Glide.class) {
+
         if (glide == null) {
           checkAndInitializeGlide(context, annotationGeneratedModule);
         }
@@ -195,6 +221,8 @@ public class Glide implements ComponentCallbacks2 {
 
     return glide;
   }
+
+
 
   @GuardedBy("Glide.class")
   private static void checkAndInitializeGlide(
@@ -206,6 +234,8 @@ public class Glide implements ComponentCallbacks2 {
           "You cannot call Glide.get() in registerComponents(),"
               + " use the provided Glide instance instead");
     }
+    System.out.println("Hey boss second test ");
+
     isInitializing = true;
     initializeGlide(context, generatedAppGlideModule);
     isInitializing = false;
@@ -331,6 +361,98 @@ public class Glide implements ComponentCallbacks2 {
     applicationContext.registerComponentCallbacks(glide);
     Glide.glide = glide;
   }
+
+
+
+
+
+
+//  private static void initializeGlidePrivate(
+//      @NonNull Context context,
+//      @NonNull GlideBuilder builder,
+//      @Nullable GeneratedAppGlideModule annotationGeneratedModule) {
+//
+//      initializeGlidePublic(context, builder, annotationGeneratedModule);
+//  }
+//
+//
+//  public static void initializeGlidePublic(
+//      @NonNull Context context,
+//      @NonNull GlideBuilder builder,
+//      @Nullable GeneratedAppGlideModule annotationGeneratedModule) {
+//    Context applicationContext = context.getApplicationContext();
+//    List<com.bumptech.glide.module.GlideModule> manifestModules = Collections.emptyList();
+//    if (annotationGeneratedModule == null || annotationGeneratedModule.isManifestParsingEnabled()) {
+//      manifestModules = new ManifestParser(applicationContext).parse();
+//    }
+//    if (annotationGeneratedModule != null
+//        && !annotationGeneratedModule.getExcludedModuleClasses().isEmpty()) {
+//      Set<Class<?>> excludedModuleClasses = annotationGeneratedModule.getExcludedModuleClasses();
+//      Iterator<com.bumptech.glide.module.GlideModule> iterator = manifestModules.iterator();
+//      while (iterator.hasNext()) {
+//        com.bumptech.glide.module.GlideModule current = iterator.next();
+//        if (!excludedModuleClasses.contains(current.getClass())) {
+//          continue;
+//        }
+//        if (Log.isLoggable(TAG, Log.DEBUG)) {
+//          Log.d(TAG, "AppGlideModule excludes manifest GlideModule: " + current);
+//        }
+//        iterator.remove();
+//      }
+//    }
+//    if (Log.isLoggable(TAG, Log.DEBUG)) {
+//      for (com.bumptech.glide.module.GlideModule glideModule : manifestModules) {
+//        Log.d(TAG, "Discovered GlideModule from manifest: " + glideModule.getClass());
+//      }
+//    }
+//    initGlide2(applicationContext, builder, annotationGeneratedModule, manifestModules);
+//  }
+//
+//
+//  public static void initGlide2(Context applicationContext, @NonNull GlideBuilder builder, @Nullable GeneratedAppGlideModule annotationGeneratedModule,
+//      List<com.bumptech.glide.module.GlideModule> manifestModules) {
+//    RequestManagerRetriever.RequestManagerFactory factory =
+//        annotationGeneratedModule != null
+//            ? annotationGeneratedModule.getRequestManagerFactory()
+//            : null;
+//    builder.setRequestManagerFactory(factory);
+//    for (com.bumptech.glide.module.GlideModule module : manifestModules) {
+//      module.applyOptions(applicationContext, builder);
+//    }
+//    if (annotationGeneratedModule != null) {
+//      annotationGeneratedModule.applyOptions(applicationContext, builder);
+//    }
+//    Glide glide = builder.build(applicationContext);
+//    for (com.bumptech.glide.module.GlideModule module : manifestModules) {
+//      try {
+//        module.registerComponents(applicationContext, glide, glide.registry);
+//      } catch (AbstractMethodError e) {
+//        throw new IllegalStateException(
+//            "Attempting to register a Glide v3 module. If you see this, you or one of your"
+//                + " dependencies may be including Glide v3 even though you're using Glide v4."
+//                + " You'll need to find and remove (or update) the offending dependency."
+//                + " The v3 module name is: "
+//                + module.getClass().getName(),
+//            e);
+//      }
+//    }
+//    if (annotationGeneratedModule != null) {
+//      annotationGeneratedModule.registerComponents(applicationContext, glide, glide.registry);
+//    }
+//    applicationContext.registerComponentCallbacks(glide);
+//    Glide.glide = glide;
+//  }
+
+
+
+
+
+
+
+
+
+
+
 
   @Nullable
   @SuppressWarnings({"unchecked", "TryWithIdenticalCatches", "PMD.UnusedFormalParameter"})
