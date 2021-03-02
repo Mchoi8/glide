@@ -122,6 +122,8 @@ public class GlideTest {
 
   private ImageView imageView;
   private RequestManager requestManager;
+  private RequestManager requestManager1;
+
   private Context context;
 
   @Before
@@ -167,7 +169,241 @@ public class GlideTest {
 
     requestManager = new RequestManager(Glide.get(context), lifecycle, treeNode, context);
     requestManager.resumeRequests();
+    requestManager1 = new RequestManager(Glide.get(context), lifecycle, treeNode, context);
+    requestManager1.resumeRequests();
   }
+
+
+  //SWE 261P Part 5 (Testable Design) Testing Private Method
+  @Test
+  public void initializeGlideTest() {
+    Glide glider = Glide.get(context);
+    System.out.println(glider);
+    System.out.println("Glide Initialized");
+  }
+
+
+
+
+  //SWE 261P Part 1: Partition Testing *********************************************
+  //Work on the override() method specifically in the inputs it takes for the width and height of the ImageView
+
+  @Test
+  public void testOverridePartition1() {
+
+    ColorDrawable colorDrawable = new ColorDrawable(Color.RED);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(0, 0).circleCrop())
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+    assertThat(bitmap.getWidth()).isEqualTo(100);
+    assertThat(bitmap.getHeight()).isEqualTo(100);
+  }
+
+
+  @Test
+  public void testOverridePartition2() {
+
+    ColorDrawable colorDrawable = new ColorDrawable(Color.RED);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(500, 500).circleCrop())
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+    assertThat(bitmap.getWidth()).isEqualTo(500);
+    assertThat(bitmap.getHeight()).isEqualTo(500);
+  }
+
+
+
+  @Test
+  public void testOverridePartition3() {
+
+    ColorDrawable colorDrawable = new ColorDrawable(Color.RED);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(11500, 11500).circleCrop())
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+    assertThat(bitmap.getWidth()).isEqualTo(11500);
+    assertThat(bitmap.getHeight()).isEqualTo(11500);
+  }
+
+  @Test
+  public void testOverridePartition4() {
+
+    ColorDrawable colorDrawable = new ColorDrawable(Color.RED);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(-155, -344).circleCrop())
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+    assertThat(bitmap.getWidth()).isEqualTo(100);
+    assertThat(bitmap.getHeight()).isEqualTo(100);
+  }
+
+  //SWE 261P Part 2 *********************************************
+  @Test
+  public void testOverride() {
+
+    ColorDrawable colorDrawable = new ColorDrawable(Color.RED);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(0, 0).circleCrop())
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+    assertThat(bitmap.getWidth()).isEqualTo(100);
+    assertThat(bitmap.getHeight()).isEqualTo(100);
+  }
+
+  @Test
+  public void testOverride1() {
+    ColorDrawable colorDrawable = new ColorDrawable(Color.RED);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(340, 550).circleCrop())
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+    assertThat(bitmap.getWidth()).isEqualTo(340);
+    assertThat(bitmap.getHeight()).isEqualTo(340);
+  }
+
+
+
+  @Test
+  public void testCircleCrop() {
+    ColorDrawable colorDrawable = new ColorDrawable(Color.GREEN);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(100, 100).circleCrop())
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    //Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+
+    //Check that the crop is there
+    assertNotNull(result);
+
+  }
+
+  @Test
+  public void testCircleCrop1() {
+    ColorDrawable colorDrawable = new ColorDrawable(Color.YELLOW);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().override(0, 0)).circleCrop()
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(BitmapDrawable.class);
+    //Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+
+    //check if the image is there
+    assertNotNull(result);
+
+  }
+
+
+
+  @Test
+  public void testPlaceholder() {
+    ColorDrawable colorDrawable = new ColorDrawable(Color.BLUE);
+
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().placeholder(colorDrawable))
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(ColorDrawable.class);
+//    Bitmap bitmap = ((BitmapDrawable) result).getBitmap();
+
+    //Checks if the placeholder and an example placeholder img is the same
+    //assertThat(bitmap.sameAs(bitmap1));
+    assertNotNull(result);
+
+  }
+
+
+
+
+  @Test
+  public void testError() {
+    ColorDrawable colorDrawable = new ColorDrawable(Color.BLUE);
+    requestManager
+        .load(colorDrawable)
+        .apply(new RequestOptions().error(colorDrawable))
+        .into(target);
+
+    ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
+    verify(target).onResourceReady(argumentCaptor.capture(), isA(Transition.class));
+
+    Object result = argumentCaptor.getValue();
+
+    assertThat(result).isInstanceOf(ColorDrawable.class);
+    assertNotNull(result);
+
+  }
+
+
+  //*******************
+
 
   @Test
   public void testCanSetMemoryCategory() {
@@ -621,19 +857,6 @@ public class GlideTest {
     verify(target).onResourceReady(eq(bitmap), any(Transition.class));
   }
 
-  //My test
-  @Test
-  public void testLoadBitmap_asBitmapTest() {
-    Bitmap bitmap = Bitmap.createBitmap(1 , 1, Bitmap.Config.ARGB_8888);
-    requestManager.asBitmap().load(bitmap).into(target);
-
-    verify(target).onResourceReady(eq(bitmap), any(Transition.class));
-  }
-
-
-
-
-
   @Test
   public void testLoadBitmap_asDrawable() {
     Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
@@ -655,21 +878,6 @@ public class GlideTest {
     assertThat(((ColorDrawable) drawableCaptor.getValue()).getColor()).isEqualTo(Color.RED);
   }
 
-
-  //My test
-  @Test
-  public void testLoadDrawableTest() {
-    Drawable drawable = new ColorDrawable(Color.MAGENTA);
-    requestManager.load(drawable).into(target);
-
-    ArgumentCaptor<Drawable> drawableCaptor = ArgumentCaptor.forClass(Drawable.class);
-    verify(target).onResourceReady(drawableCaptor.capture(), any(Transition.class));
-    assertThat(((ColorDrawable) drawableCaptor.getValue()).getColor()).isEqualTo(Color.MAGENTA);
-  }
-
-
-
-
   @Test
   public void testNullModelPrefersFallbackDrawable() {
     Drawable placeholder = new ColorDrawable(Color.GREEN);
@@ -684,27 +892,6 @@ public class GlideTest {
     verify(target).onLoadFailed(eq(fallback));
   }
 
-  //My test
-  @Test
-  public void testNullModelPrefersFallbackDrawableTest() {
-    Drawable placeholder = new ColorDrawable(Color.GREEN);
-    Drawable error = new ColorDrawable(Color.RED);
-    Drawable fallback = new ColorDrawable(Color.BLUE);
-
-    Drawable drawable = new ColorDrawable(Color.LTGRAY);
-
-    requestManager
-        .load(drawable)
-        .apply(placeholderOf(placeholder).error(error).fallback(fallback))
-        .into(target);
-
-    //verify(target).onLoadStarted(fallback);
-    //verify(target).onLoadFailed(eq(fallback));
-  }
-
-
-
-
   @Test
   public void testNullModelResolvesToUsePlaceholder() {
     Drawable placeholder = new ColorDrawable(Color.GREEN);
@@ -714,32 +901,9 @@ public class GlideTest {
     verify(target).onLoadFailed(eq(placeholder));
   }
 
-
-
-  //My test
-  @Test
-  public void testNullModelResolvesToUsePlaceholderTest() {
-    Drawable placeholder = new ColorDrawable(Color.GREEN);
-    Drawable drawable = new ColorDrawable(Color.GRAY);
-
-    requestManager.load(drawable).apply(placeholderOf(placeholder)).into(target);
-
-    //verify(target).onLoadStarted(placeholder);
-    //verify(target).onLoadFailed(eq(placeholder));
-  }
-
-
-
   @Test
   public void testByteData() {
     byte[] data = new byte[] {1, 2, 3, 4, 5, 6};
-    requestManager.load(data).into(target);
-  }
-
-  //My test
-  @Test
-  public void testingBigByteData() {
-    byte[] data = new byte[] {6};
     requestManager.load(data).into(target);
   }
 
